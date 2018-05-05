@@ -32,31 +32,43 @@ public class ReadInputFileUtil {
         boolean onEdgeData = false;
 
         // process the node data
-        while ((currentLine = br.readLine()) != null) {
+        while (count < nodeContentLength) {
+            currentLine = br.readLine();
             System.out.println(currentLine);
             // first portion of data is for colors, second is for edge data
 
             if (count < nodeContentLength) {
-                if(!onEdgeData) {
                     // create our objects
                     RedGreenNode currentNode = createNodeFromString(currentLine);
                     graph.getChildrenNodes()[count] = currentNode;
                     nameIndices.put(currentNode.getName(), count);
                     count++;
-                } else {
-                    edgeContentLength = Character.getNumericValue(currentLine.toCharArray()[0]);
-                    break;
-                }
-            } else {
-                onEdgeData = true;
-                count = 0;
             }
         }
 
+        // after the node data is the edge data length
+        currentLine = br.readLine();
+        edgeContentLength = Character.getNumericValue(currentLine.toCharArray()[0]);
         // TODO: process the edge data
+        for(int i = 0; i < edgeContentLength; i++) {
+            currentLine = br.readLine();
+            System.out.println(currentLine);
+            String parentNodeName = currentLine.substring(0,1);
+            String childNodeName = currentLine.substring(2,3);
 
+            RedGreenNode childNode = graph.getChildrenNodes()[nameIndices.get(childNodeName)];
+            RedGreenNode parentNode = graph.getChildrenNodes()[nameIndices.get(parentNodeName)];
 
-        System.out.println(" resulting set of nodes " + Arrays.deepToString(graph.getChildrenNodes()));
+            graph.getChildrenNodes()[nameIndices.get(parentNodeName)]
+                    .setChildrenNodes(addChild(parentNode, childNode));
+        }
+
+        System.out.println(" resulting set of generated nodes " + Arrays.deepToString(graph.getChildrenNodes()));
+
+        RedGreenNode result = new RedGreenNode("graph", RedGreenNode.NodeType.GRAPH,
+                graph.reduceGraph(graph.getChildrenNodes()));
+
+        System.out.println("Resulting reduction is \n" + result.getChildrenString());
     }
 
     // the first letter is the name of the node, R denotes red, G denotes green
@@ -82,5 +94,18 @@ public class ReadInputFileUtil {
         }
         // if the length is not NODE_INPUT_LENGTH then input is invalid and node cannot be created
         return null;
+    }
+
+    private static RedGreenNode[] addChild(RedGreenNode parent, RedGreenNode child) {
+        if(parent.getChildrenNodes() == null) return new RedGreenNode[] {child};
+
+        int numChildren = parent.getChildrenNodes().length + 1;
+        RedGreenNode[] largerChildrenArray = new RedGreenNode[numChildren];
+        for(int i = 0; i < parent.getChildrenNodes().length; i++) {
+            largerChildrenArray[i] = parent.getChildrenNodes()[i];
+        }
+        largerChildrenArray[parent.getChildrenNodes().length] = child;
+
+        return largerChildrenArray;
     }
 }
