@@ -1,5 +1,6 @@
 package com.graphtest.graphreduction;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class RedGreenNode {
@@ -8,6 +9,8 @@ public class RedGreenNode {
     private String name;
     private NodeType nodeType;
     private RedGreenNode[] childrenNodes;
+
+    public RedGreenNode() {}
 
     public RedGreenNode(String name, NodeType nodeType, RedGreenNode[] childrenNodes) {
         this.name = name;
@@ -35,6 +38,23 @@ public class RedGreenNode {
         return deleteUnvisitedReds(visitedReds, graph);
     }
 
+    // generate the requested output string in the format
+    // A
+    // B
+    // D
+    // E
+    public String getChildrenString() {
+        StringBuilder sb = new StringBuilder();
+        for(RedGreenNode rgn : childrenNodes) {
+            if(rgn != null) {
+                sb.append(rgn.getName());
+                sb.append("\n");
+            }
+        }
+        // remove the trailing \n character and convert to string
+        return sb.subSequence(0, sb.length()-1).toString();
+    }
+
     private RedGreenNode[] deleteUnvisitedReds(HashMap<String, RedGreenNode> visitedNodes, RedGreenNode[] graph) {
         for(int i = 0; i < graph.length; i++) {
             // if we haven't visited a red node delete it by nulling it out
@@ -44,6 +64,7 @@ public class RedGreenNode {
         }
         return graph;
     }
+
     public String getName() {
         return name;
     }
@@ -56,7 +77,7 @@ public class RedGreenNode {
         return nodeType;
     }
 
-    public void getNodeType(NodeType color) {
+    public void setNodeType(NodeType color) {
         this.nodeType = color;
     }
 
@@ -68,20 +89,13 @@ public class RedGreenNode {
         this.childrenNodes = childrenNodes;
     }
 
-    public String getChildrenString() {
-        StringBuilder sb = new StringBuilder();
-        for(RedGreenNode rgn : childrenNodes) {
-            if(rgn != null) {
-                sb.append(rgn.toString());
-                sb.append("\n");
-            }
-        }
-        return sb.toString();
-    }
-
     @Override
     public String toString() {
-        return name;
+        return "RedGreenNode{" +
+                "name='" + name + '\'' +
+                ", nodeType=" + nodeType +
+                ", childrenNodes=" + Arrays.toString(childrenNodes) +
+                '}';
     }
 
 

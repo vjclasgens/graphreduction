@@ -16,13 +16,15 @@ public class TestRedGreenGraph {
 
     @Test
     public void testSimpleReduction() {
-        String expected = "A\n"+"B\n"+"D\n"+"E\n";
+        String expected = "A\n"+"B\n"+"D\n"+"E";
 
         RedGreenNode result = new RedGreenNode("graph", NodeType.GRAPH,
                 redGreenGraph.reduceGraph(redGreenGraph.getChildrenNodes()));
 
         Assert.assertEquals(expected, result.getChildrenString());
     }
+
+    // TODO: test edge cases ie all greens, all reds, bad input, etc
 
     private RedGreenNode[] createInitialInputData() {
         // TODO: Generate these objects by reading from a txt file
