@@ -1,5 +1,7 @@
 package com.graphtest.graphreduction;
 
+import java.util.HashMap;
+
 public class RedGreenNode {
     public enum NodeType {RED, GREEN, GRAPH}
 
@@ -13,11 +15,35 @@ public class RedGreenNode {
         this.childrenNodes = childrenNodes;
     }
 
-    // this is the method where we'll solve the problem
+    // Reduce graph based on 2 criteria
+    // 1) Any red node not reachable from a green node is removed
+    // 2) Every green node from the input is in the output
     public RedGreenNode[] reduceGraph(RedGreenNode[] graph) {
-        return graph;
+        HashMap<String, RedGreenNode> visitedReds = new HashMap<>();
+
+        for(int i = 0; i < graph.length; i++) {
+            // if the graph is green we traverse the children and mark as visited
+            if(graph[i].getNodeType().equals(NodeType.GREEN) && graph[i].getChildrenNodes() != null) {
+                for(RedGreenNode node : graph[i].getChildrenNodes()) {
+                    if(node.getNodeType().equals(NodeType.RED)) {
+                        visitedReds.put(node.name, node);
+                    }
+                }
+            }
+        }
+
+        return deleteUnvisitedReds(visitedReds, graph);
     }
 
+    private RedGreenNode[] deleteUnvisitedReds(HashMap<String, RedGreenNode> visitedNodes, RedGreenNode[] graph) {
+        for(int i = 0; i < graph.length; i++) {
+            // if we haven't visited a red node delete it by nulling it out
+            if(graph[i].getNodeType().equals(NodeType.RED) && !visitedNodes.containsKey(graph[i].name)) {
+                graph[i] = null;
+            }
+        }
+        return graph;
+    }
     public String getName() {
         return name;
     }
@@ -26,11 +52,11 @@ public class RedGreenNode {
         this.name = name;
     }
 
-    public NodeType getColor() {
+    public NodeType getNodeType() {
         return nodeType;
     }
 
-    public void setColor(NodeType color) {
+    public void getNodeType(NodeType color) {
         this.nodeType = color;
     }
 
@@ -43,11 +69,12 @@ public class RedGreenNode {
     }
 
     public String getChildrenString() {
-        // use stringbuilder to reduce space b/c strings are immutable
         StringBuilder sb = new StringBuilder();
         for(RedGreenNode rgn : childrenNodes) {
-            sb.append(rgn.toString());
-            sb.append("\n");
+            if(rgn != null) {
+                sb.append(rgn.toString());
+                sb.append("\n");
+            }
         }
         return sb.toString();
     }

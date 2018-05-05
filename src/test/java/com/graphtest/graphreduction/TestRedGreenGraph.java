@@ -16,7 +16,7 @@ public class TestRedGreenGraph {
 
     @Test
     public void testSimpleReduction() {
-        String expected = "A\n"+"B\n"+"C\n"+"D\n";
+        String expected = "A\n"+"B\n"+"D\n"+"E\n";
 
         RedGreenNode result = new RedGreenNode("graph", NodeType.GRAPH,
                 redGreenGraph.reduceGraph(redGreenGraph.getChildrenNodes()));
