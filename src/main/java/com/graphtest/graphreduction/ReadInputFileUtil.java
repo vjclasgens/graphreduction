@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class ReadInputFileUtil {
     private static final int NODE_INPUT_LENGTH = 3;
-    private static final String INPUT_FILE_PATH = "src/inputfiles/input1.txt";
+    private static final String INPUT_FILE_PATH = "src/inputfiles/cycleinput.txt";
 
     public static void main(String[] args) throws Exception
     {
@@ -26,7 +26,7 @@ public class ReadInputFileUtil {
         currentLine = br.readLine();
 
         // initialize the node array to the specified length
-        nodeContentLength = Character.getNumericValue(currentLine.toCharArray()[0]);
+        nodeContentLength = Integer.valueOf(currentLine);
         graph.setChildrenNodes(new RedGreenNode[nodeContentLength]);
         HashMap<String,Integer> nameIndices = new HashMap<>();
         boolean onEdgeData = false;
@@ -37,19 +37,17 @@ public class ReadInputFileUtil {
             System.out.println(currentLine);
             // first portion of data is for colors, second is for edge data
 
-            if (count < nodeContentLength) {
-                    // create our objects
-                    RedGreenNode currentNode = createNodeFromString(currentLine);
-                    graph.getChildrenNodes()[count] = currentNode;
-                    nameIndices.put(currentNode.getName(), count);
-                    count++;
-            }
+            // create our objects
+            RedGreenNode currentNode = createNodeFromString(currentLine);
+            graph.getChildrenNodes()[count] = currentNode;
+            nameIndices.put(currentNode.getName(), count);
+            count++;
         }
 
         // after the node data is the edge data length
         currentLine = br.readLine();
-        edgeContentLength = Character.getNumericValue(currentLine.toCharArray()[0]);
-        // TODO: process the edge data
+        edgeContentLength = Integer.valueOf(currentLine);;
+        // process the edge data
         for(int i = 0; i < edgeContentLength; i++) {
             currentLine = br.readLine();
             System.out.println(currentLine);
@@ -62,8 +60,6 @@ public class ReadInputFileUtil {
             graph.getChildrenNodes()[nameIndices.get(parentNodeName)]
                     .setChildrenNodes(addChild(parentNode, childNode));
         }
-
-        System.out.println(" resulting set of generated nodes " + Arrays.deepToString(graph.getChildrenNodes()));
 
         RedGreenNode result = new RedGreenNode("graph", RedGreenNode.NodeType.GRAPH,
                 graph.reduceGraph(graph.getChildrenNodes()));

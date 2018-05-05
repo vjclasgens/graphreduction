@@ -51,6 +51,9 @@ public class RedGreenNode {
                 sb.append("\n");
             }
         }
+        if(sb.length() == 0){
+            return "";
+        }
         // remove the trailing \n character and convert to string
         return sb.subSequence(0, sb.length()-1).toString();
     }
